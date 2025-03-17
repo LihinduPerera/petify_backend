@@ -12,3 +12,7 @@ class UserOut(BaseModel):
     email: str
     address: str = None
     phone: str = None
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
