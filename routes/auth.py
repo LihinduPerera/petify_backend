@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
+from bson import ObjectId
 
 router = APIRouter()
 SECRET_KEY = "lihindu_perera"
@@ -68,6 +69,35 @@ async def login(user_in: UserLogin):
 @router.get("/current-user", response_model=UserOut)
 async def get_user_data(current_user: dict = Depends(get_current_user)):
     return {"name": current_user["name"], "email": current_user["email"], "address": current_user["address"], "phone": current_user["phone"]}
+
+
+@router.put("/update-user", response_model=UserOut)
+async def update_user(user_in: UserIn, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    
+    updated_data = {}
+    if user_in.name:
+        updated_data["name"] = user_in.name
+    if user_in.address:
+        updated_data["address"] = user_in.address
+    if user_in.phone:
+        updated_data["phone"] = user_in.phone
+    
+    if not updated_data:
+        raise HTTPException(status_code=400, detail="No data provided for update")
+
+    result = user_collection.update_one({"_id": ObjectId(user_id)}, {"$set": updated_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    updated_user = user_collection.find_one({"_id": ObjectId(user_id)})
+    
+    return UserOut(
+        name=updated_user["name"],
+        email=updated_user["email"],
+        address=updated_user.get("address"),
+        phone=updated_user.get("phone")
+    )
 
 @router.post("/logout")
 async def logout():
