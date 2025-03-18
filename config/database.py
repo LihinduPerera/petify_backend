@@ -5,3 +5,6 @@ client = MongoClient(uri_connection)
 
 user_db = client.user_db
 user_collection = user_db["user_collection"]
+
+shop_db = client.shop_db
+products_collection = shop_db["shop_products"]

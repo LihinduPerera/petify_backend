@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from schema.user import UserIn, UserOut, UserLogin
+from models.user_model import UserIn, UserOut, UserLogin
 from config.database import user_collection
 from passlib.context import CryptContext
 import jwt
