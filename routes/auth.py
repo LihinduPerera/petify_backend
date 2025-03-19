@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from models.user_model import UserIn, UserOut, UserLogin
+from models.user_model import UserIn, UserOut, UserLogin , UserUpdate
 from config.database import user_collection
 from passlib.context import CryptContext
 import jwt
@@ -10,7 +10,7 @@ from bson import ObjectId
 router = APIRouter()
 SECRET_KEY = "lihindu_perera"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_DAYS = 7
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -20,12 +20,13 @@ def hash_password(password: str):
 def verify_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
-def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
-    to_encode = data.copy()
+def create_access_token(user: dict, expires_delta: timedelta = timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)):
+    to_encode = user.copy()
     expire = datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
@@ -63,16 +64,22 @@ async def login(user_in: UserLogin):
     user = user_collection.find_one({"email": user_in.email})
     if not user or not verify_password(user_in.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid Credentials !!")
-    access_token = create_access_token(data={"sub": user_in.email})
+    
+    user_data = {
+        "sub": user_in.email,
+        "name": user["name"],
+        "email": user["email"],
+        "phone": user.get("phone", ""),
+        "address": user.get("address", "") 
+    }
+
+    access_token = create_access_token(data=user_data)
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/current-user", response_model=UserOut)
-async def get_user_data(current_user: dict = Depends(get_current_user)):
-    return {"name": current_user["name"], "email": current_user["email"], "address": current_user["address"], "phone": current_user["phone"]}
 
 
 @router.put("/update-user", response_model=UserOut)
-async def update_user(user_in: UserIn, current_user: dict = Depends(get_current_user)):
+async def update_user(user_in: UserUpdate, current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
     
     updated_data = {}

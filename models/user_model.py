@@ -20,6 +20,11 @@ class UserOut(BaseModel):
     address: Optional[str] = None
     phone: Optional[str] = None
 
+class UserUpdate(BaseModel):
+    name: str
+    address: Optional[str] = None
+    phone: Optional[str] = None
+
 class UserLogin(BaseModel):
     email: str
     password: str
