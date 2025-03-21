@@ -14,3 +14,6 @@ category_collection = shop_categories["shop_categories"]
 
 shop_promos = client.shop_db
 promo_collection = shop_promos["shop_promos"]
+
+shop_banners = client.shop_db
+banner_collection = shop_banners["shop_banners"]
