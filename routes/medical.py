@@ -33,7 +33,7 @@ async def update_medical(medical_id:str, medical: MedicalUpdate):
     update_medical["id"] = str_id(update_medical["_id"])
     return update_medical
 
-@router.delete("/medicals/{medical_id}", response_model=MedicalResponse)
+@router.delete("/medicals/{medical_id}")
 async def delete_medical(medical_id: str):
     result = medical_collection.delete_one({"_id":ObjectId(medical_id)})
     if result.deleted_count == 0:

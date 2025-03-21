@@ -33,7 +33,7 @@ async def update_category(category_id: str, category:CategoryUpdate):
     update_category["id"] = str_id(update_category["_id"])
     return update_category
 
-@router.delete("/categories/{category_id}", response_model=CategoryResponse)
+@router.delete("/categories/{category_id}")
 async def delete_category(category_id: str):
     result = category_collection.delete_one({"_id": ObjectId(category_id)})
     if result.deleted_count == 0:

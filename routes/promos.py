@@ -33,7 +33,7 @@ async def update_promo(promo_id: str, promo: PromoUpdate):
     update_promo["id"] = str_id(update_promo["_id"])
     return update_promo
 
-@router.delete("/promos/{promo_id}", response_model=PromoResponse)
+@router.delete("/promos/{promo_id}")
 async def delete_promo(promo_id: str):
     result = promo_collection.delete_one({"_id": ObjectId(promo_id)})
     if result.deleted_count == 0:

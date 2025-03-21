@@ -33,7 +33,7 @@ async def update_banner(banner_id: str, banner: BannerUpdate):
     update_banner["id"] = str_id(update_banner["_id"])
     return update_banner
 
-@router.delete("/banners/{banner_id}", response_model=BannerResponse)
+@router.delete("/banners/{banner_id}")
 async def delete_banner(banner_id: str):
     result = banner_collection.delete_one({"_id": ObjectId(banner_id)})
     if result.deleted_count == 0:
