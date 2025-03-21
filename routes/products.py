@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException , Query
 from models.products_model import ProductCreate, ProductUpdate, ProductResponse
 from config.database import product_collection
 from bson import ObjectId
@@ -47,3 +47,26 @@ async def delete_product(product_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
     return {"detail": "Product deleted successfully"}
+
+@router.get("/products/search/", response_model=list[ProductResponse])
+async def search_products_by_name(query: str = Query(..., min_length=1, max_length=100)):
+    products = []
+    for product in product_collection.find({"name": {"$regex": query, "$options": "i"}}):
+        product["id"] = str_id(product["_id"])
+        products.append(product)
+    return products
+
+@router.put("/products/{product_id}/reduce_quantity/")
+async def reduce_quantity(product_id: str, quantity: int):
+    if quantity <= 0:
+        raise HTTPException(status_code=400, detail="Quantity must be greater than 0")
+    product = product_collection.find_one({"_id": ObjectId(product_id)})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    new_quantity = product['quantity'] - quantity
+    if new_quantity < 0:
+        raise HTTPException(status_code=400, detail="Insufficient stock")
+    
+    product_collection.update_one({"_id": ObjectId(product_id)}, {"$set": {"quantity": new_quantity}})
+    return {"message": f"Quantity reduced by {quantity}. New quantity: {new_quantity}"}

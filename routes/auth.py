@@ -73,10 +73,8 @@ async def login(user_in: UserLogin):
         "address": user.get("address", "") 
     }
 
-    access_token = create_access_token(data=user_data)
+    access_token = create_access_token(user=user_data)
     return {"access_token": access_token, "token_type": "bearer"}
-
-
 
 @router.put("/update-user", response_model=UserOut)
 async def update_user(user_in: UserUpdate, current_user: dict = Depends(get_current_user)):
@@ -85,9 +83,9 @@ async def update_user(user_in: UserUpdate, current_user: dict = Depends(get_curr
     updated_data = {}
     if user_in.name:
         updated_data["name"] = user_in.name
-    if user_in.address:
+    if user_in.address is not None:
         updated_data["address"] = user_in.address
-    if user_in.phone:
+    if user_in.phone is not None:
         updated_data["phone"] = user_in.phone
     
     if not updated_data:
@@ -105,6 +103,7 @@ async def update_user(user_in: UserUpdate, current_user: dict = Depends(get_curr
         address=updated_user.get("address"),
         phone=updated_user.get("phone")
     )
+
 
 @router.post("/logout")
 async def logout():
