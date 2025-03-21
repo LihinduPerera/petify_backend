@@ -4,14 +4,15 @@ from fastapi.responses import HTMLResponse
 from routes.auth import router as auth_router
 from routes.products import router as product_router
 from routes.categories import router as category_router
+from routes.promos import router as promo_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(product_router, tags=["products"])
 app.include_router(category_router, tags=["categories"])
+app.include_router(promo_router, tags=["promos"])
 
 about_html = """
 <!DOCTYPE html>
