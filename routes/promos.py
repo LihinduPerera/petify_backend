@@ -15,11 +15,11 @@ async def create_promo(promo: PromoCreate):
     promo_dict["id"] = str_id(result.inserted_id)
     return promo_dict
 
-@router.get("/promos/",response_model=PromoResponse)
+@router.get("/promos/",response_model=list[PromoResponse])
 async def get_promos():
     promos = []
     for promo in promo_collection.find():
-        promo["id"] = str_id(promo["id"])
+        promo["id"] = str_id(promo["_id"])
         promos.append(promo)
     return promos
 

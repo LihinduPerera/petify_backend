@@ -15,11 +15,11 @@ async def create_banner(banner: BannerCreate):
     banner_dict["id"] = str_id(result.inserted_id)
     return banner_dict
 
-@router.get("/banners/", response_model=BannerResponse)
+@router.get("/banners/", response_model=list[BannerResponse])
 async def get_banners():
     banners = []
     for banner in banner_collection.find():
-        banner["id"] = str_id(banner["id"])
+        banner["id"] = str_id(banner["_id"])
         banners.append(banner)
     return banners
 

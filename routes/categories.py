@@ -15,11 +15,11 @@ async def create_category(category: CategoryCreate):
     category_dict["id"] = str_id(result.inserted_id)
     return category_dict
 
-@router.get("/categories/",response_model=CategoryResponse)
+@router.get("/categories/",response_model=list[CategoryResponse])
 async def get_categories():
     categories = []
     for category in category_collection.find():
-        category["id"] = str_id(category["id"])
+        category["id"] = str_id(category["_id"])
         categories.append(category)
     return categories
 

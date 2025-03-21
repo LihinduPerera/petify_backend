@@ -15,11 +15,11 @@ async def create_medical(medical: MedicalCreate):
     medical_dict["id"] = str_id(result.inserted_id)
     return medical_dict
 
-@router.get("/medicals/",response_model=MedicalResponse)
+@router.get("/medicals/",response_model=list[MedicalResponse])
 async def get_medicals():
     medicals = []
     for medical in medical_collection.find():
-        medical["id"] = str_id(medical["id"])
+        medical["id"] = str_id(medical["_id"])
         medicals.append(medical)
     return medical
 
