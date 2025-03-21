@@ -3,9 +3,7 @@ from config.uri import MongoClient as uri_connection
 
 client = MongoClient(uri_connection)
 
-user_db = client.user_db
-user_collection = user_db["user_collection"]
-
+# Shop  --->>>
 shop_products = client.shop_db
 product_collection = shop_products["shop_products"]
 
@@ -17,3 +15,15 @@ promo_collection = shop_promos["shop_promos"]
 
 shop_banners = client.shop_db
 banner_collection = shop_banners["shop_banners"]
+
+# User --->>>
+user_db = client.user_db
+user_collection = user_db["user_collection"]
+
+# Medicals --->>>
+medicals = client.medical_db
+medical_collection = medicals["medicals"]
+
+# Pets --->>>
+pets = client.pet_db
+pet_collection = pets["pets"]
