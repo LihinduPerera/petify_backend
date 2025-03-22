@@ -7,6 +7,7 @@ from routes.categories import router as category_router
 from routes.promos import router as promo_router
 from routes.banner import router as banner_router
 from routes.medical import router as medical_router
+from routes.cart import router as cart_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,6 +18,7 @@ app.include_router(category_router, tags=["categories"])
 app.include_router(promo_router, tags=["promos"])
 app.include_router(banner_router, tags=["banners"])
 app.include_router(medical_router, tags=["medicals"])
+app.include_router(cart_router, tags=["cart"])
 
 about_html = """
 <!DOCTYPE html>

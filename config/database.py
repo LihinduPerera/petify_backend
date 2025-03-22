@@ -20,6 +20,9 @@ banner_collection = shop_banners["shop_banners"]
 user_db = client.user_db
 user_collection = user_db["user_collection"]
 
+user_cart = client.user_db
+cart_collection = user_cart["cart_collection"]
+
 # Medicals --->>>
 medicals = client.medical_db
 medical_collection = medicals["medicals"]
