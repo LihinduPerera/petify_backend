@@ -31,6 +31,17 @@ async def get_product(product_id: str):
     product["id"] = str_id(product["_id"])
     return product
 
+@router.get("/products/category/{category}", response_model=list[ProductResponse])
+async def get_products_by_category(category: str):
+    category = category.lower()
+    products = []
+    for product in product_collection.find({"category": category}):
+        product["id"] = str_id(product["_id"])
+        products.append(product)    
+    if not products:
+        raise HTTPException(status_code=404, detail=f"No products found for category: {category}")
+    return products
+
 @router.put("/products/{product_id}", response_model=ProductResponse)
 async def update_product(product_id: str, product: ProductUpdate):
     update_data = {key: value for key, value in product.dict().items() if value is not None}

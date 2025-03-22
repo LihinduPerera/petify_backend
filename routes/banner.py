@@ -26,7 +26,7 @@ async def get_banners():
 @router.put("/banners/{banner_id}", response_model=BannerResponse)
 async def update_banner(banner_id: str, banner: BannerUpdate):
     update_data = {key: value for key, value in banner.dict().items() if value is not None}
-    result = banner_collection.update_one({"id":ObjectId(banner_id)} , {"$set": update_data})
+    result = banner_collection.update_one({"_id":ObjectId(banner_id)} , {"$set": update_data})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Banner not found")
     update_banner = banner_collection.find_one({"_id": ObjectId(banner_id)})
