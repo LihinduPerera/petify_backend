@@ -75,7 +75,7 @@ async def login(user_in: UserLogin):
     }
 
     access_token = create_access_token(user=user_data)
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer",**user_data}
 
 @router.put("/update-user", response_model=UserOut)
 async def update_user(user_in: UserUpdate, current_user: dict = Depends(get_current_user)):
