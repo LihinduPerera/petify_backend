@@ -70,7 +70,8 @@ async def login(user_in: UserLogin):
         "name": user["name"],
         "email": user["email"],
         "phone": user.get("phone", ""),
-        "address": user.get("address", "") 
+        "address": user.get("address", ""),
+        "user_id": str(user["_id"])
     }
 
     access_token = create_access_token(user=user_data)
