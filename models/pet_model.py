@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List , Optional
 
 class PetBase(BaseModel):
     owner: str
@@ -10,7 +9,6 @@ class PetBase(BaseModel):
     age: int
     gender: str
     dob : datetime
-    medical_history: Optional[List[str]] = []
 
 class PetCreate(PetBase):
     pass
