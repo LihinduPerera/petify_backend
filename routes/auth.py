@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from models.user_model import UserIn, UserOut, UserLogin , UserUpdate
+from models.user_model import UserIn, UserOut, UserLogin , UserUpdate ,ReadUsers
 from config.database import user_collection
 from passlib.context import CryptContext
 import jwt
@@ -27,7 +27,6 @@ def create_access_token(user: dict, expires_delta: timedelta = timedelta(days=AC
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -42,6 +41,27 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=401, detail="Token has expired")
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Token is invalid")
+    
+def str_id(id: ObjectId) -> str:
+    return str(id)
+
+@router.get("/users", response_model=list[ReadUsers])
+async def get_users():
+    users = user_collection.find() 
+    if not users:
+        raise HTTPException(status_code=404, detail="No users found")
+
+    user_list = []
+    for user in users:
+        user_data = ReadUsers(
+            id=str(user["_id"]),
+            name=user["name"],
+            email=user["email"],
+            phone=user.get("phone", "")
+        )
+        user_list.append(user_data)
+
+    return user_list
 
 @router.post("/register", response_model=UserOut)
 async def register_user(user_in: UserIn):

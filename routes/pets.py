@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from config.database import pet_collection
-from models.pet_model import PetCreate , PetUpdate , PetResponse
+from models.pet_model import PetCreate , PetUpdate
 from bson import ObjectId
 
 router = APIRouter()
