@@ -1,14 +1,15 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class PetBase(BaseModel):
     owner: str
-    name: str
-    species: str
-    breed: str
-    age: int
-    gender: str
-    dob : datetime
+    name: Optional[str] = None
+    species: Optional[str] = None
+    breed: Optional[str] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    # dob : Optional[datetime] = None
 
 class PetCreate(PetBase):
     pass
