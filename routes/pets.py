@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from config.database import pet_collection
+from config.database import pet_collection , medical_collection
 from models.pet_model import PetCreate , PetUpdate
 from bson import ObjectId
 
@@ -53,6 +53,10 @@ async def delete_pet(pet_id: str):
     pet = pet_collection.find_one({"_id": ObjectId(pet_id)})
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
+    
+    result_medicals = medical_collection.delete_many({"pet": pet_id})
+    if result_medicals.deleted_count > 0:
+        print(f"Deleted {result_medicals.deleted_count} medical records associated with pet {pet_id}")
     
     result = pet_collection.delete_one({"_id": ObjectId(pet_id)})
 
