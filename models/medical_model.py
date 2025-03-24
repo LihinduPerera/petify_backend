@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import date
 from typing import Optional
 
 
 class MedicalBase(BaseModel):
-    pet: str
-    date: datetime
+    pet: Optional[str] = None
+    date: date
     medication: str
     notes: Optional[str] = None
     status: str

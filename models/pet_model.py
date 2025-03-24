@@ -9,7 +9,6 @@ class PetBase(BaseModel):
     breed: Optional[str] = None
     age: Optional[int] = None
     gender: Optional[str] = None
-    # dob : Optional[datetime] = None
 
 class PetCreate(PetBase):
     pass

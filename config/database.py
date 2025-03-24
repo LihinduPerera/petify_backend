@@ -28,4 +28,4 @@ pet_collection = user_pets["user_pet_collection"]
 
 # Medicals --->>>
 medicals = client.medical_db
-medical_collection = medicals["medicals"]
+medical_collection = medicals["medical_collection"]
