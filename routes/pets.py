@@ -54,9 +54,7 @@ async def delete_pet(pet_id: str):
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
     
-    result_medicals = medical_collection.delete_many({"pet": pet_id})
-    if result_medicals.deleted_count > 0:
-        print(f"Deleted {result_medicals.deleted_count} medical records associated with pet {pet_id}")
+    medical_collection.delete_many({"pet": pet_id})
     
     result = pet_collection.delete_one({"_id": ObjectId(pet_id)})
 
