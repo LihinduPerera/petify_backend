@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends , Query
 from models.user_model import UserIn, UserOut, UserLogin , UserUpdate ,ReadUsers
 from config.database import user_collection
 from passlib.context import CryptContext
@@ -6,6 +6,7 @@ import jwt
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
 from bson import ObjectId
+from typing import List
 
 router = APIRouter()
 SECRET_KEY = "lihindu_perera"
@@ -62,6 +63,18 @@ async def get_users():
         user_list.append(user_data)
 
     return user_list
+
+@router.get("/users/search/", response_model=List[ReadUsers])
+async def search_user_by_email(query: str = Query(..., min_length=1, max_length=100)):
+    users = []
+    for user in user_collection.find({"email": {"$regex": query, "$options": "i"}}):
+        users.append(ReadUsers(
+            id=str(user["_id"]),
+            name=user["name"],
+            email=user["email"],
+            phone=user.get("phone", "")
+        ))
+    return users
 
 @router.post("/register", response_model=UserOut)
 async def register_user(user_in: UserIn):
