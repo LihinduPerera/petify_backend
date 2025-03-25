@@ -76,7 +76,7 @@ async def search_user_by_email(query: str = Query(..., min_length=1, max_length=
         ))
     return users
 
-@router.post("/register", response_model=UserOut)
+@router.post("/register")
 async def register_user(user_in: UserIn):
     hashed_password = hash_password(user_in.password)
     user = {
@@ -86,11 +86,25 @@ async def register_user(user_in: UserIn):
         "phone": user_in.phone,
         "password": hashed_password
     }
+
     existing_user = user_collection.find_one({"email": user_in.email})
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+    
     result = user_collection.insert_one(user)
-    return UserOut(name=user_in.name, email=user_in.email, address=user_in.address, phone=user_in.phone)
+    user_id = str(result.inserted_id)
+    
+    user_data = {
+        "sub": user_in.email,
+        "name": user_in.name,
+        "email": user_in.email,
+        "phone": user.get("phone", ""),
+        "address": user.get("address", ""),
+        "user_id": user_id,
+    }
+
+    access_token = create_access_token(user=user_data)
+    return {"access_token": access_token, "token_type": "bearer", **user_data}
 
 @router.post("/login")
 async def login(user_in: UserLogin):
