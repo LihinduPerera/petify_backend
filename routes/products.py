@@ -23,14 +23,6 @@ async def get_products():
         products.append(product)
     return products
 
-# @router.get("/products/{product_id}", response_model=ProductResponse)
-# async def get_product(product_id: str):
-#     product = product_collection.find_one({"_id": ObjectId(product_id)})
-#     if not product:
-#         raise HTTPException(status_code=404, detail="Product not found")
-#     product["id"] = str_id(product["_id"])
-#     return product
-
 from fastapi import Query
 
 @router.get("/products/by_ids", response_model=list[ProductResponse])
