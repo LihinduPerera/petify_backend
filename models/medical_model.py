@@ -9,6 +9,8 @@ class MedicalBase(BaseModel):
     medication: str
     notes: Optional[str] = None
     status: str
+    isNotified: Optional[bool] = False
+    isNewMedical: Optional[bool] = True
 
 class MedicalCreate(MedicalBase):
     pass

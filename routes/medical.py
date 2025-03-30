@@ -28,6 +28,8 @@ async def read_pet_medicals(pet_id: str):
 @router.post("/{pet_id}/medicals")
 async def add_medical(pet_id: str, medical_data: MedicalCreate):
     medical_data.pet = pet_id
+    medical_data.isNotified = False
+    medical_data.isNewMedical = True
     medical_dict = medical_data.dict()
     
     if isinstance(medical_dict["date"], date):
@@ -78,3 +80,32 @@ async def delete_medical(medical_id: str):
         raise HTTPException(status_code=404, detail="Medical is not found")
     
     return {"message": "Medical deleted successfully"}
+
+@router.patch("/medicals/{medical_id}/notification")
+async def update_notification_flags(medical_id: str, notification_data: dict):
+    
+    medical = medical_collection.find_one({"_id": ObjectId(medical_id)})
+    if not medical:
+        raise HTTPException(status_code=404, detail="Medical record not found.")
+    
+    updated_data = {}
+    
+    if "isNotified" in notification_data:
+        updated_data["isNotified"] = notification_data["isNotified"]
+    
+    if "isNewMedical" in notification_data:
+        updated_data["isNewMedical"] = notification_data["isNewMedical"]
+
+    result = medical_collection.update_one(
+        {"_id": ObjectId(medical_id)},
+        {"$set": updated_data}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Medical record not found.")
+
+    updated_medical = medical_collection.find_one({"_id": ObjectId(medical_id)})
+    updated_medical["_id"] = str(updated_medical["_id"])
+    
+    return updated_medical
+
