@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends , Query
-from models.user_model import UserIn, UserOut, UserLogin , UserUpdate ,ReadUsers
+from models.user_model import UserIn, UserOut, UserLogin , UserUpdate ,ReadUsers , User
 from config.database import user_collection
 from passlib.context import CryptContext
 import jwt
@@ -76,6 +76,42 @@ async def search_user_by_email(query: str = Query(..., min_length=1, max_length=
         ))
     return users
 
+@router.post("/googleauth")
+async def google_auth(User: User):
+    user = {
+        "name": User.name,
+        "email": User.email,
+        "address": User.address,
+        "phone": User.phone
+    }
+
+    existing_user = user_collection.find_one({"email": User.email})
+    if existing_user:
+        existing_user_data = {
+            "sub": User.email,
+            "name": existing_user["name"],
+            "email": existing_user["email"],
+            "phone": existing_user.get("phone", ""),
+            "address": existing_user.get("address", ""),
+            "user_id": str(existing_user["_id"])
+        }
+        access_token = create_access_token(user=existing_user_data)
+        return {"access_token": access_token, "token_type": "bearer", **existing_user_data}
+    else: 
+        result = user_collection.insert_one(user)
+        user_id = str(result.inserted_id)
+
+        created_user_data = {
+            "sub": User.email,
+            "name": User.name,
+            "email": User.email,
+            "phone": User.phone,
+            "address": User.address,
+            "user_id": user_id
+        }
+        access_token = create_access_token(user=created_user_data)
+        return {"access_token": access_token, "token_type": "bearer", **created_user_data}
+
 @router.post("/register")
 async def register_user(user_in: UserIn):
     hashed_password = hash_password(user_in.password)
@@ -151,7 +187,6 @@ async def update_user(user_in: UserUpdate, current_user: dict = Depends(get_curr
         address=updated_user.get("address"),
         phone=updated_user.get("phone")
     )
-
 
 @router.post("/logout")
 async def logout():
