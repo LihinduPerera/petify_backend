@@ -9,6 +9,7 @@ from routes.banner import router as banner_router
 from routes.cart import router as cart_router
 from routes.pets import router as pet_router
 from routes.medical import router as medical_router
+from routes.feedbacks import router as feedback_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,6 +22,7 @@ app.include_router(banner_router, tags=["banners"])
 app.include_router(cart_router, tags=["cart"])
 app.include_router(pet_router, tags=["pets"])
 app.include_router(medical_router, tags=["medicals"])
+app.include_router(feedback_router, tags=["feedbacks"])
 
 about_html = """
 <!DOCTYPE html>

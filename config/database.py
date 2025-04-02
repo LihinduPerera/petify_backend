@@ -26,6 +26,9 @@ cart_collection = user_cart["cart_collection"]
 user_pets = client.user_db
 pet_collection = user_pets["user_pet_collection"]
 
+feedbacks = client.user_db
+feedback_collection = feedbacks["feedback_collection"]
+
 # Medicals --->>>
 medicals = client.medical_db
 medical_collection = medicals["medical_collection"]

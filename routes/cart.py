@@ -1,7 +1,6 @@
 from fastapi import APIRouter , HTTPException
 from models.cart_model import CartModel
 from config.database import cart_collection
-from bson import ObjectId
 
 router = APIRouter()
 
