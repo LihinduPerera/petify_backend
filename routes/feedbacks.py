@@ -11,7 +11,7 @@ def get_feedback_collection(user_id: str):
 def str_id(id: ObjectId) -> str:
     return str(id)
 
-@router.get("/{user_id}/feedback")
+@router.get("/{user_id}/feedbacks")
 async def read_feedbacks(user_id: str):
     feedbacks = list(get_feedback_collection(user_id).find({"user": user_id}))
     if not feedbacks:
