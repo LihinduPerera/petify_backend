@@ -8,7 +8,7 @@ router = APIRouter()
 def str_id(id: ObjectId) -> str:
     return str(id)
 
-@router.post("/promos/", response_model=PromoResponse)
+@router.post("/promos/", response_model                                                                                                                                                                                                 =PromoResponse)
 async def create_promo(promo: PromoCreate):
     promo_dict = promo.dict()
     result = promo_collection.insert_one(promo_dict)

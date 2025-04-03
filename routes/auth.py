@@ -199,3 +199,8 @@ async def reset_password(email: str):
         raise HTTPException(status_code=404, detail="User not found")
     # Send a reset link via email (this part is not implemented yet)
     return {"message": "Password reset email sent!! (Still not added this feature)"}
+
+@router.get("/user-count")
+async def get_user_count():
+    count = user_collection.count_documents({})
+    return {"user_count": count}

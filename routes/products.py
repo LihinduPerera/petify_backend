@@ -89,3 +89,8 @@ async def reduce_quantity(product_id: str, quantity: int):
     
     product_collection.update_one({"_id": ObjectId(product_id)}, {"$set": {"quantity": new_quantity}})
     return {"message": f"Quantity reduced by {quantity}. New quantity: {new_quantity}"}
+
+@router.get("/product-count")
+async def get_product_count():
+    count = product_collection.count_documents({})
+    return {"product_count": count}

@@ -109,3 +109,7 @@ async def update_notification_flags(medical_id: str, notification_data: dict):
     
     return updated_medical
 
+@router.get("/medical-count")
+async def get_medical_count():
+    count = medical_collection.count_documents({})
+    return {"medical_count": count}
