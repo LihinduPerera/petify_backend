@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends , Query
-from models.user_model import UserIn, UserOut, UserLogin , UserUpdate ,ReadUsers , User
-from config.database import user_collection
+from models.user_model import UserIn, UserOut, UserLogin , UserUpdate ,ReadUsers , User ,AdminLogin
+from config.database import user_collection , admin_collection
 from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
@@ -204,3 +204,26 @@ async def reset_password(email: str):
 async def get_user_count():
     count = user_collection.count_documents({})
     return {"user_count": count}
+
+@router.post("/admin-login")
+async def admin_login(admin_in: AdminLogin):
+    admin = admin_collection.find_one({"email": admin_in.email})
+    if not admin or not verify_password(admin_in.password, admin["password"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    return {"message": "Login successful"}
+
+@router.post("/admin-register")
+async def admin_register(admin_in: AdminLogin):
+    existing_admin = admin_collection.find_one({"email": admin_in.email})
+    if existing_admin:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    hashed_password = hash_password(admin_in.password)
+    admin = {
+        "email": admin_in.email,
+        "password": hashed_password,
+    }
+    result = admin_collection.insert_one(admin)
+
+    return {"message": "Registration successful"}

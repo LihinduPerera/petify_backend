@@ -29,6 +29,9 @@ pet_collection = user_pets["user_pet_collection"]
 feedbacks = client.user_db
 feedback_collection = feedbacks["feedback_collection"]
 
+admin_db = client.user_db
+admin_collection = admin_db["admin_collection"]
+
 # Medicals --->>>
 medicals = client.medical_db
 medical_collection = medicals["medical_collection"]
